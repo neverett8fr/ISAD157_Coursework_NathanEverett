@@ -38,6 +38,7 @@
             this.TBPSummary = new System.Windows.Forms.TabPage();
             this.TBPEditData = new System.Windows.Forms.TabPage();
             this.BTNUploadGroup = new System.Windows.Forms.Button();
+            this.OFDLoadExcel = new System.Windows.Forms.OpenFileDialog();
             ((System.ComponentModel.ISupportInitialize)(this.DGVTableview)).BeginInit();
             this.TBCDataViews.SuspendLayout();
             this.TBPProfilePage.SuspendLayout();
@@ -138,6 +139,10 @@
             this.BTNUploadGroup.Text = "Group";
             this.BTNUploadGroup.UseVisualStyleBackColor = true;
             // 
+            // OFDLoadExcel
+            // 
+            this.OFDLoadExcel.FileName = "openFileDialog1";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
@@ -171,6 +176,7 @@
         private System.Windows.Forms.TabPage TBPSummary;
         private System.Windows.Forms.TabPage TBPEditData;
         private System.Windows.Forms.Button BTNUploadGroup;
+        private System.Windows.Forms.OpenFileDialog OFDLoadExcel;
     }
 }
 
