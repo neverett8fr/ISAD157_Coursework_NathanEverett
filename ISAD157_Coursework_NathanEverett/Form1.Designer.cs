@@ -37,9 +37,11 @@
             this.TBPProfilePage = new System.Windows.Forms.TabPage();
             this.TBPSummary = new System.Windows.Forms.TabPage();
             this.TBPEditData = new System.Windows.Forms.TabPage();
+            this.BTNUploadGroup = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.DGVTableview)).BeginInit();
             this.TBCDataViews.SuspendLayout();
             this.TBPProfilePage.SuspendLayout();
+            this.TBPEditData.SuspendLayout();
             this.SuspendLayout();
             // 
             // BTNSelectDataSource
@@ -50,6 +52,7 @@
             this.BTNSelectDataSource.TabIndex = 0;
             this.BTNSelectDataSource.Text = "Select Data Source";
             this.BTNSelectDataSource.UseVisualStyleBackColor = true;
+            this.BTNSelectDataSource.Click += new System.EventHandler(this.BTNSelectDataSource_Click);
             // 
             // TXTSourceName
             // 
@@ -118,12 +121,22 @@
             // 
             // TBPEditData
             // 
+            this.TBPEditData.Controls.Add(this.BTNUploadGroup);
             this.TBPEditData.Location = new System.Drawing.Point(4, 29);
             this.TBPEditData.Name = "TBPEditData";
             this.TBPEditData.Size = new System.Drawing.Size(537, 542);
             this.TBPEditData.TabIndex = 2;
             this.TBPEditData.Text = "Edit / Add Data";
             this.TBPEditData.UseVisualStyleBackColor = true;
+            // 
+            // BTNUploadGroup
+            // 
+            this.BTNUploadGroup.Location = new System.Drawing.Point(440, 25);
+            this.BTNUploadGroup.Name = "BTNUploadGroup";
+            this.BTNUploadGroup.Size = new System.Drawing.Size(75, 23);
+            this.BTNUploadGroup.TabIndex = 0;
+            this.BTNUploadGroup.Text = "Group";
+            this.BTNUploadGroup.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
@@ -140,6 +153,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.DGVTableview)).EndInit();
             this.TBCDataViews.ResumeLayout(false);
             this.TBPProfilePage.ResumeLayout(false);
+            this.TBPEditData.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -156,6 +170,7 @@
         private System.Windows.Forms.TabPage TBPProfilePage;
         private System.Windows.Forms.TabPage TBPSummary;
         private System.Windows.Forms.TabPage TBPEditData;
+        private System.Windows.Forms.Button BTNUploadGroup;
     }
 }
 
