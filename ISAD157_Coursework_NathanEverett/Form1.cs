@@ -21,6 +21,7 @@ namespace ISAD157_Coursework_NathanEverett
 {
     public partial class Form1 : Form
     {
+        DataSet dataSetLocal;
         public Form1()
         {
             InitializeComponent();
@@ -38,23 +39,27 @@ namespace ISAD157_Coursework_NathanEverett
                 connection = new MySqlConnection(connstring);
                 connection.Open();
 
-                string query = "SELECT * FROM table_user;";
+               
+                string query = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE';"; //this query returns the names of the tables in use and puts it's data into a table
                 MySqlDataAdapter dataAdapter = new MySqlDataAdapter(query, connection);
-                DataSet dataSet = new DataSet();
-                dataAdapter.Fill(dataSet, "table_user");
-                DataTable dataTable = dataSet.Tables["table_user"];
+                dataSetLocal = new DataSet();                 
+                dataAdapter.Fill(dataSetLocal, "table_names");
 
-                DGVTableview.DataSource = dataTable;
+                //DGVTableview.DataSource = dataSetLocal.Tables["table_names"];
 
-                foreach (DataRow row in dataTable.Rows)
+                for (int i = 0; i <= dataSetLocal.Tables["table_names"].Rows.Count - 1; i++) //repeat for amount of tables
                 {
-                    foreach (DataColumn col in dataTable.Columns)
-                    {                        
-                        MessageBox.Show(row[col] + "\t");
-                    }
-
-                    MessageBox.Show("\n");
+                    query = "SELECT * FROM " + dataSetLocal.Tables["table_names"].Rows[i][0] +  ";"; //this creates a query which will return all the tables in the database
+                    dataAdapter = new MySqlDataAdapter(query, connection);
+                    dataAdapter.Fill(dataSetLocal, dataSetLocal.Tables["table_names"].Rows[i][0].ToString()); //this populates the DataSet variable with all the tables
+                    CMBTableSelect.Items.Add(dataSetLocal.Tables["table_names"].Rows[i][0].ToString());
                 }
+
+
+                
+
+
+
             }
             catch
             {
@@ -70,6 +75,10 @@ namespace ISAD157_Coursework_NathanEverett
 
             
         }
+
+
+
+
 
         DataTable readExcelTable(OpenFileDialog excelDocument)
         {
@@ -263,7 +272,26 @@ namespace ISAD157_Coursework_NathanEverett
             //connectMySQL();
 
             connectMySQL(setupConnection());
-            
+
+
+           
+
+
+
+
+            //TXTSourceName.Text = dataTable.TableName;
+            //for (int i = 0; i <= schema - 1; i++)
+            //{
+            //    CMBTableSelect.Items.Add();
+            //}
+
+
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            DataTable dataTable = dataSetLocal.Tables[CMBTableSelect.Text];
+            DGVTableview.DataSource = dataTable;
 
         }
     }

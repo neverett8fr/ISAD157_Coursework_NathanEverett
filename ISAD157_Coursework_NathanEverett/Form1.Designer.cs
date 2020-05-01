@@ -30,7 +30,7 @@
         {
             this.BTNSelectDataSource = new System.Windows.Forms.Button();
             this.TXTSourceName = new System.Windows.Forms.TextBox();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.CMBTableSelect = new System.Windows.Forms.ComboBox();
             this.DGVTableview = new System.Windows.Forms.DataGridView();
             this.RTBProfile = new System.Windows.Forms.RichTextBox();
             this.TBCDataViews = new System.Windows.Forms.TabControl();
@@ -47,9 +47,9 @@
             // 
             // BTNSelectDataSource
             // 
-            this.BTNSelectDataSource.Location = new System.Drawing.Point(228, 14);
+            this.BTNSelectDataSource.Location = new System.Drawing.Point(166, 12);
             this.BTNSelectDataSource.Name = "BTNSelectDataSource";
-            this.BTNSelectDataSource.Size = new System.Drawing.Size(86, 26);
+            this.BTNSelectDataSource.Size = new System.Drawing.Size(160, 26);
             this.BTNSelectDataSource.TabIndex = 0;
             this.BTNSelectDataSource.Text = "Select Data Source";
             this.BTNSelectDataSource.UseVisualStyleBackColor = true;
@@ -57,18 +57,19 @@
             // 
             // TXTSourceName
             // 
-            this.TXTSourceName.Location = new System.Drawing.Point(12, 14);
+            this.TXTSourceName.Location = new System.Drawing.Point(12, 12);
             this.TXTSourceName.Name = "TXTSourceName";
-            this.TXTSourceName.Size = new System.Drawing.Size(210, 26);
+            this.TXTSourceName.Size = new System.Drawing.Size(148, 26);
             this.TXTSourceName.TabIndex = 1;
             // 
-            // comboBox1
+            // CMBTableSelect
             // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(320, 12);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(208, 28);
-            this.comboBox1.TabIndex = 2;
+            this.CMBTableSelect.FormattingEnabled = true;
+            this.CMBTableSelect.Location = new System.Drawing.Point(332, 12);
+            this.CMBTableSelect.Name = "CMBTableSelect";
+            this.CMBTableSelect.Size = new System.Drawing.Size(196, 28);
+            this.CMBTableSelect.TabIndex = 2;
+            this.CMBTableSelect.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
             // DGVTableview
             // 
@@ -150,7 +151,7 @@
             this.ClientSize = new System.Drawing.Size(1091, 601);
             this.Controls.Add(this.TBCDataViews);
             this.Controls.Add(this.DGVTableview);
-            this.Controls.Add(this.comboBox1);
+            this.Controls.Add(this.CMBTableSelect);
             this.Controls.Add(this.TXTSourceName);
             this.Controls.Add(this.BTNSelectDataSource);
             this.Name = "Form1";
@@ -168,7 +169,7 @@
 
         private System.Windows.Forms.Button BTNSelectDataSource;
         private System.Windows.Forms.TextBox TXTSourceName;
-        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.ComboBox CMBTableSelect;
         private System.Windows.Forms.DataGridView DGVTableview;
         private System.Windows.Forms.RichTextBox RTBProfile;
         private System.Windows.Forms.TabControl TBCDataViews;
