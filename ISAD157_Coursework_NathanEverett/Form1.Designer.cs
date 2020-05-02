@@ -39,6 +39,7 @@
             this.TBPEditData = new System.Windows.Forms.TabPage();
             this.BTNUploadGroup = new System.Windows.Forms.Button();
             this.OFDLoadExcel = new System.Windows.Forms.OpenFileDialog();
+            this.BTNLoadCSV = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.DGVTableview)).BeginInit();
             this.TBCDataViews.SuspendLayout();
             this.TBPProfilePage.SuspendLayout();
@@ -123,6 +124,7 @@
             // 
             // TBPEditData
             // 
+            this.TBPEditData.Controls.Add(this.BTNLoadCSV);
             this.TBPEditData.Controls.Add(this.BTNUploadGroup);
             this.TBPEditData.Location = new System.Drawing.Point(4, 29);
             this.TBPEditData.Name = "TBPEditData";
@@ -133,16 +135,27 @@
             // 
             // BTNUploadGroup
             // 
-            this.BTNUploadGroup.Location = new System.Drawing.Point(440, 25);
+            this.BTNUploadGroup.Location = new System.Drawing.Point(449, 14);
             this.BTNUploadGroup.Name = "BTNUploadGroup";
-            this.BTNUploadGroup.Size = new System.Drawing.Size(75, 23);
+            this.BTNUploadGroup.Size = new System.Drawing.Size(75, 36);
             this.BTNUploadGroup.TabIndex = 0;
-            this.BTNUploadGroup.Text = "Group";
+            this.BTNUploadGroup.Text = "Upload Table";
             this.BTNUploadGroup.UseVisualStyleBackColor = true;
+            this.BTNUploadGroup.Click += new System.EventHandler(this.BTNUploadGroup_Click);
             // 
             // OFDLoadExcel
             // 
             this.OFDLoadExcel.FileName = "openFileDialog1";
+            // 
+            // BTNLoadCSV
+            // 
+            this.BTNLoadCSV.Location = new System.Drawing.Point(449, 56);
+            this.BTNLoadCSV.Name = "BTNLoadCSV";
+            this.BTNLoadCSV.Size = new System.Drawing.Size(75, 36);
+            this.BTNLoadCSV.TabIndex = 1;
+            this.BTNLoadCSV.Text = "Load CSV";
+            this.BTNLoadCSV.UseVisualStyleBackColor = true;
+            this.BTNLoadCSV.Click += new System.EventHandler(this.BTNLoadCSV_Click);
             // 
             // Form1
             // 
@@ -178,6 +191,7 @@
         private System.Windows.Forms.TabPage TBPEditData;
         private System.Windows.Forms.Button BTNUploadGroup;
         private System.Windows.Forms.OpenFileDialog OFDLoadExcel;
+        private System.Windows.Forms.Button BTNLoadCSV;
     }
 }
 

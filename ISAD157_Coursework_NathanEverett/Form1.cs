@@ -8,6 +8,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -22,37 +23,38 @@ namespace ISAD157_Coursework_NathanEverett
     public partial class Form1 : Form
     {
         DataSet dataSetLocal;
+        DataTable newTableData;
         public Form1()
         {
             InitializeComponent();
         }
 
-        void connectMySQL(string connectionString)
+        DataSet connectMySQL(string connectionString)
         {
-            string connstring = @"server=proj-mysql.uopnet.plymouth.ac.uk;userid=ISAD157_NEverett;password=ISAD157_22225597;database=isad157_neverett";
-            connstring = connectionString;
-            
+                        
             MySqlConnection connection = null;
+
+            DataSet output;
 
             try
             {
-                connection = new MySqlConnection(connstring);
+                connection = new MySqlConnection(connectionString);
                 connection.Open();
 
                
                 string query = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE';"; //this query returns the names of the tables in use and puts it's data into a table
                 MySqlDataAdapter dataAdapter = new MySqlDataAdapter(query, connection);
-                dataSetLocal = new DataSet();                 
-                dataAdapter.Fill(dataSetLocal, "table_names");
+                output = new DataSet();                 
+                dataAdapter.Fill(output, "table_names");
 
                 //DGVTableview.DataSource = dataSetLocal.Tables["table_names"];
 
-                for (int i = 0; i <= dataSetLocal.Tables["table_names"].Rows.Count - 1; i++) //repeat for amount of tables
+                for (int i = 0; i <= output.Tables["table_names"].Rows.Count - 1; i++) //repeat for amount of tables
                 {
-                    query = "SELECT * FROM " + dataSetLocal.Tables["table_names"].Rows[i][0] +  ";"; //this creates a query which will return all the tables in the database
+                    query = "SELECT * FROM " + output.Tables["table_names"].Rows[i][0] +  ";"; //this creates a query which will return all the tables in the database
                     dataAdapter = new MySqlDataAdapter(query, connection);
-                    dataAdapter.Fill(dataSetLocal, dataSetLocal.Tables["table_names"].Rows[i][0].ToString()); //this populates the DataSet variable with all the tables
-                    CMBTableSelect.Items.Add(dataSetLocal.Tables["table_names"].Rows[i][0].ToString());
+                    dataAdapter.Fill(output, output.Tables["table_names"].Rows[i][0].ToString()); //this populates the DataSet variable with all the tables
+                    CMBTableSelect.Items.Add(output.Tables["table_names"].Rows[i][0].ToString());
                 }
 
 
@@ -64,6 +66,7 @@ namespace ISAD157_Coursework_NathanEverett
             catch
             {
                 MessageBox.Show("Error: table or database credentials incorrect");
+                return null;
             }
             finally
             {
@@ -73,7 +76,7 @@ namespace ISAD157_Coursework_NathanEverett
                 }
             }
 
-            
+            return output;
         }
 
 
@@ -180,7 +183,7 @@ namespace ISAD157_Coursework_NathanEverett
             DialogResult dialogResult = FRMReturnConnection.ShowDialog();
 
             if (dialogResult.ToString() == "OK" && RDBUsePreset.Checked == true)
-            {
+            {                
                 return "server=proj-mysql.uopnet.plymouth.ac.uk;userid=ISAD157_NEverett;password=ISAD157_22225597;database=isad157_neverett";
             }
             else if (dialogResult.ToString() == "OK" && RDBSetupConnection.Checked == true)
@@ -267,24 +270,9 @@ namespace ISAD157_Coursework_NathanEverett
         }
         private void BTNSelectDataSource_Click(object sender, EventArgs e)
         {
-            //OFDLoadExcel.ShowDialog();
-            //DGVTableview.DataSource = readExcelTable(OFDLoadExcel);
-            //connectMySQL();
+            
 
-            connectMySQL(setupConnection());
-
-
-           
-
-
-
-
-            //TXTSourceName.Text = dataTable.TableName;
-            //for (int i = 0; i <= schema - 1; i++)
-            //{
-            //    CMBTableSelect.Items.Add();
-            //}
-
+            dataSetLocal = connectMySQL(setupConnection());       
 
         }
 
@@ -293,6 +281,219 @@ namespace ISAD157_Coursework_NathanEverett
             DataTable dataTable = dataSetLocal.Tables[CMBTableSelect.Text];
             DGVTableview.DataSource = dataTable;
 
+        }
+
+
+
+        void uploadTable(DataTable uploadTable)
+        {
+            //get info to upload to a server and any existing tables / info
+            string connectionString = setupConnection();
+            DataSet oldDataSet = connectMySQL(connectionString);
+            //--------------
+
+            //choose which table to upload to from the existing tables;
+            string chooseUploadTableLocation()
+            {
+                Form FRMUploadLocation = new Form();
+
+                Button BTNSubmitInformation = new Button();
+                Button BTNCancelInformation = new Button();
+
+                Label LBLText = new Label();
+                ComboBox CMBTables = new ComboBox();
+
+
+                //choose which table to upload to from exising tables;
+                for (int i = 0; i <= oldDataSet.Tables["table_names"].Rows.Count - 1; i++)
+                {
+                    CMBTables.Items.Add(oldDataSet.Tables["table_names"].Rows[i][0]);
+                }
+
+                LBLText.Text = "Please select which table to upload to: ";                
+                BTNSubmitInformation.Text = "Submit";
+                BTNCancelInformation.Text = "Cancel";
+
+                BTNSubmitInformation.SetBounds(228, 80, 75, 23);
+                BTNCancelInformation.SetBounds(309, 80, 75, 23);
+                LBLText.SetBounds(9, 10, 200, 13);       
+                CMBTables.SetBounds(9, 25, 200, 13);
+
+                BTNSubmitInformation.DialogResult = DialogResult.OK;
+                BTNCancelInformation.DialogResult = DialogResult.Cancel;
+
+                BTNSubmitInformation.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+                BTNCancelInformation.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+
+                FRMUploadLocation.ClientSize = new Size(396, 100);
+                FRMUploadLocation.Controls.AddRange(new Control[] { BTNSubmitInformation, BTNCancelInformation, LBLText, CMBTables});
+
+                FRMUploadLocation.FormBorderStyle = FormBorderStyle.FixedDialog;
+                FRMUploadLocation.StartPosition = FormStartPosition.CenterScreen;
+                FRMUploadLocation.MinimizeBox = false;
+                FRMUploadLocation.MaximizeBox = false;
+                FRMUploadLocation.AcceptButton = BTNSubmitInformation;
+                FRMUploadLocation.CancelButton = BTNCancelInformation;
+
+
+                DialogResult output = FRMUploadLocation.ShowDialog();
+
+                if (output.ToString() == "OK")
+                {
+                    string tableOutput = CMBTables.Text;
+
+                    return tableOutput;
+                }
+
+
+
+                return null;
+            }
+            string uploadTableLocation = chooseUploadTableLocation(); //calls function which returns which table the file should be uploaded to on user input
+            //----------------------
+
+
+
+            //check headers same -- convert if not
+            bool sameHeaders = true; //excel document has different names for headers and in different orders as the database tables
+            for (int i = 0; i <= uploadTable.Columns.Count - 1; i++)
+            {                
+                if (uploadTable.Columns[i].ColumnName != oldDataSet.Tables[uploadTableLocation].Columns[i].ColumnName)
+                {                    
+                    sameHeaders = false;
+                }
+            }
+
+            if (sameHeaders == false) //if false create queries / convert for all entries // if false its from the csv file
+            {
+                DataTable tempTable = new DataTable();
+                Random rnd = new Random();
+                for (int i = 0; i <= uploadTable.Rows.Count - 1; i++)
+                {
+                    DataRow newRow = tempTable.NewRow();
+                    int randomNum = 1;
+                    switch (uploadTableLocation)
+                    {
+                        case "table_user":
+                            //1st column both user_id = UserID
+                            //newRow["user_id"] = "Smith";
+                            //newRow["name_first"] = "Smith";
+                            //newRow["name_last"] = "Smith";
+                            //newRow["hometown"] = "Smith";
+                            //newRow["gender"] = "Smith";
+                            //newRow["statusRelationship"] = "Smith";
+                            //newRow["currentTown"] = "Smith";
+                            //newRow["workplace_id"] = "Smith";
+                            //newRow["school_id"] = "Smith";
+                            while (tempTable.Columns.Count <= 8)
+                            {
+                                tempTable.Columns.Add();
+                            }
+                            //creates a row in the expected format
+                            newRow[0] = uploadTable.Rows[i][0];
+                            newRow[1] = uploadTable.Rows[i][1];
+                            newRow[2] = uploadTable.Rows[i][2];
+                            newRow[3] = uploadTable.Rows[i][4];
+                            newRow[4] = uploadTable.Rows[i][3];
+                            newRow[5] = "Unknown";
+                            newRow[6] = uploadTable.Rows[i][5];
+                            newRow[7] = "Unknown";
+                            newRow[8] = "Unknown";
+                            //------------------------------------
+
+                            tempTable.Rows.Add(newRow);
+
+                            //DGVTableview.DataSource = tempTable;
+
+                            break;
+                        case "table_workplace":
+
+
+                            break;
+                        case "table_school":
+                            break;
+                        case "table_friends":
+                            while (tempTable.Columns.Count <= 4)
+                            {
+                                tempTable.Columns.Add();
+                            }
+                            randomNum = rnd.Next(1, 99999999);
+                            newRow[0] = randomNum;//uniqueid
+                            newRow[1] = uploadTable.Rows[i][0];//friendid
+                            newRow[2] = uploadTable.Rows[i][1];//userid
+
+
+                            tempTable.Rows.Add(newRow);
+
+                            break;
+                        case "table_messages":
+                            while (tempTable.Columns.Count <= 6)
+                            {
+                                tempTable.Columns.Add();
+                            }
+
+                            randomNum = rnd.Next(1, 99999999);
+                            //bool contains = tempTable.AsEnumerable().Any(row => randomNum == row.Field<int>(0));
+                            //do
+                            //{
+                                //randomNum = rnd.Next(1, 99999999);
+                              //  contains = tempTable.AsEnumerable().Any(row => randomNum == row.Field<int>(0));
+                            //} while (!contains);
+                            newRow[0] = randomNum;//messageid //unknown have to create one and check doesnt exist
+                            newRow[1] = uploadTable.Rows[i][0];//senderid
+                            newRow[2] = uploadTable.Rows[i][1];//recieverid
+                            newRow[3] = uploadTable.Rows[i][2];//datetime
+                            newRow[4] = uploadTable.Rows[i][3];//textmessage
+
+
+                            tempTable.Rows.Add(newRow);                            
+                            break;
+                    }
+                }
+                DGVTableview.DataSource = tempTable;
+            }
+               
+            //-----------------
+
+
+
+            //create a list of queries to apply to database -- create queries by comparing the two tables
+            string[] queryArray = new string[0];
+            //for (int i = 0; i <= )
+            //{
+
+            //}
+
+            //----------------------
+
+
+
+
+                //compare the tables -- search if entry exists in old, if yes check if changed, if yes then update -- search if entry exists, if no then add one
+                //for (int i = 0; i <= )
+
+
+                //----------------------------
+
+
+
+
+                //upload the tables again where changed e.g. if there's no id = 555 then add that with single query -- loop for all rows in constructed table where changed
+
+
+
+
+        }
+        private void BTNLoadCSV_Click(object sender, EventArgs e)
+        {
+            OFDLoadExcel.ShowDialog();
+            newTableData = readExcelTable(OFDLoadExcel);
+            DGVTableview.DataSource = newTableData;
+        }
+
+        private void BTNUploadGroup_Click(object sender, EventArgs e)
+        {
+            uploadTable(newTableData);
         }
     }
 }
