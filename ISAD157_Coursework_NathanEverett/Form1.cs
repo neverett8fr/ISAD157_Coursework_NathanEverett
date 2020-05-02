@@ -364,14 +364,13 @@ namespace ISAD157_Coursework_NathanEverett
                 }
             }
 
+            string[] queryArray = new string[0];
             if (sameHeaders == false) //if false create queries / convert for all entries // if false its from the csv file
-            {
-                DataTable tempTable = new DataTable();
+            {               
                 Random rnd = new Random();
                 for (int i = 0; i <= uploadTable.Rows.Count - 1; i++)
                 {
-                    DataRow newRow = tempTable.NewRow();
-                    int randomNum = 1;
+                    int randomNum = rnd.Next(1, 99999999);
                     switch (uploadTableLocation)
                     {
                         case "table_user":
@@ -385,86 +384,150 @@ namespace ISAD157_Coursework_NathanEverett
                             //newRow["currentTown"] = "Smith";
                             //newRow["workplace_id"] = "Smith";
                             //newRow["school_id"] = "Smith";
-                            while (tempTable.Columns.Count <= 8)
-                            {
-                                tempTable.Columns.Add();
-                            }
-                            //creates a row in the expected format
-                            newRow[0] = uploadTable.Rows[i][0];
-                            newRow[1] = uploadTable.Rows[i][1];
-                            newRow[2] = uploadTable.Rows[i][2];
-                            newRow[3] = uploadTable.Rows[i][4];
-                            newRow[4] = uploadTable.Rows[i][3];
-                            newRow[5] = "Unknown";
-                            newRow[6] = uploadTable.Rows[i][5];
-                            newRow[7] = "Unknown";
-                            newRow[8] = "Unknown";
-                            //------------------------------------
 
-                            tempTable.Rows.Add(newRow);
 
-                            //DGVTableview.DataSource = tempTable;
-
-                            break;
-                        case "table_workplace":
+                            //Create query then resizes and adds it to the array of queries
+                            Array.Resize(ref queryArray, queryArray.Length + 1);
+                            queryArray[queryArray.Length - 1] = "INSERT INTO " + uploadTableLocation + "('user_id', 'name_first', 'name_last', 'hometown', 'gender', 'statusRelationship', 'currentTown', 'workplace_id', 'school_id') "+
+                                "VALUES("+ uploadTable.Rows[i][0] +", '"+ uploadTable.Rows[i][1]+"', '"+ uploadTable.Rows[i][2]+"', '"+
+                                uploadTable.Rows[i][4]+"', '" + uploadTable.Rows[i][3] + "', '" + "Unknown" + "', '" + uploadTable.Rows[i][5] + "', 0, 0"+ ");";
+                            //--------------------------------------------------------------
 
 
                             break;
-                        case "table_school":
+                        case "table_workplace"://requires the user_id to exist in the user table
+                            //this will have two queries -- one to create the new workplace, one to replace the workplace field in 'table_user' with foreign key
+                            Array.Resize(ref queryArray, queryArray.Length + 1); //first query to create the workplace query
+                            queryArray[queryArray.Length - 1] = "INSERT INTO " + uploadTableLocation + "('workplace_id', 'workplace_name', 'employment_date_start', 'employment_date_end') " +
+                                "VALUES(" + randomNum + ", '" + uploadTable.Rows[i][1] + "', '" + "0001/01/01" + "', '" + "0001/01/01" + "'" + ");";
+                            
+                            //second query to replace the field of user where id = specified
+                            Array.Resize(ref queryArray, queryArray.Length + 1);
+                            queryArray[queryArray.Length - 1] = "UPDATE table_user" + " SET workplace_id = " + randomNum + " WHERE user_id = " + uploadTable.Rows[i][0]+ ");";
+
+
+                            break;
+                        case "table_school"://requires the user_id to exist in the user table
+                            Array.Resize(ref queryArray, queryArray.Length + 1); //first query to create the workplace query
+                            queryArray[queryArray.Length - 1] = "INSERT INTO " + uploadTableLocation + "('school_id', 'school_name', 'school_date_start', 'school_date_end') " +
+                                "VALUES(" + randomNum + ", '" + uploadTable.Rows[i][1] + "', '" + "0001/01/01" + "', '" + "0001/01/01" + "'" + ");";
+                                                        
+                            //second query to replace the field of user where id = specified
+                            Array.Resize(ref queryArray, queryArray.Length + 1);
+                            queryArray[queryArray.Length - 1] = "UPDATE table_user" + " SET school_id = " + randomNum + " WHERE user_id = " + uploadTable.Rows[i][0] + ");";
+
                             break;
                         case "table_friends":
-                            while (tempTable.Columns.Count <= 4)
-                            {
-                                tempTable.Columns.Add();
-                            }
-                            randomNum = rnd.Next(1, 99999999);
-                            newRow[0] = randomNum;//uniqueid
-                            newRow[1] = uploadTable.Rows[i][0];//friendid
-                            newRow[2] = uploadTable.Rows[i][1];//userid
 
-
-                            tempTable.Rows.Add(newRow);
+                            Array.Resize(ref queryArray, queryArray.Length + 1);
+                            queryArray[queryArray.Length - 1] = "INSERT INTO " + uploadTableLocation + "('unique_id', 'friend_id', 'user_id') " +
+                                "VALUES(" + randomNum + ", " + uploadTable.Rows[i][0] + ", " + uploadTable.Rows[i][1] + ");";
 
                             break;
                         case "table_messages":
-                            while (tempTable.Columns.Count <= 6)
-                            {
-                                tempTable.Columns.Add();
-                            }
 
-                            randomNum = rnd.Next(1, 99999999);
-                            //bool contains = tempTable.AsEnumerable().Any(row => randomNum == row.Field<int>(0));
-                            //do
-                            //{
-                                //randomNum = rnd.Next(1, 99999999);
-                              //  contains = tempTable.AsEnumerable().Any(row => randomNum == row.Field<int>(0));
-                            //} while (!contains);
-                            newRow[0] = randomNum;//messageid //unknown have to create one and check doesnt exist
-                            newRow[1] = uploadTable.Rows[i][0];//senderid
-                            newRow[2] = uploadTable.Rows[i][1];//recieverid
-                            newRow[3] = uploadTable.Rows[i][2];//datetime
-                            newRow[4] = uploadTable.Rows[i][3];//textmessage
+                            //newRow[0] = randomNum;//messageid //unknown have to create one and check doesnt exist
+                            //newRow[1] = uploadTable.Rows[i][0];//senderid
+                            //newRow[2] = uploadTable.Rows[i][1];//recieverid
+                            //newRow[3] = uploadTable.Rows[i][2];//datetime
+                            //newRow[4] = uploadTable.Rows[i][3];//textmessage
 
+                            Array.Resize(ref queryArray, queryArray.Length + 1);
+                            queryArray[queryArray.Length - 1] = "INSERT INTO " + uploadTableLocation + "('message_id', 'sender_id', 'reciever_id', 'data_time', 'text_message') " +
+                                "VALUES(" + randomNum + ", " + uploadTable.Rows[i][0] + ", " + uploadTable.Rows[i][1] +", '" +  uploadTable.Rows[i][2]  + "', '"+
+                               uploadTable.Rows[i][3]+"'"+ ");";
 
-                            tempTable.Rows.Add(newRow);                            
                             break;
                     }
                 }
-                DGVTableview.DataSource = tempTable;
+            }
+            else if (sameHeaders == true) //same headers means can take the information directly from same column names without converting the csv file
+            {                
+                //if headers same -- check new entry against old entry primary keys to see if data changed, if changed update, if doesnt exist create, if same ignore
+                //think about ways to optimise this because this will take a very long time with large datasets and my bad searching methods
+                for (int i = 0; i <= uploadTable.Rows.Count - 1; i++)
+                {
+                    bool replace = false;
+                    for (int j = 0; j <= oldDataSet.Tables[uploadTableLocation].Rows.Count - 1; j++)
+                    {                        
+                        if (oldDataSet.Tables[uploadTableLocation].Rows[j][0].ToString() == uploadTable.Rows[i][0].ToString()) //if primary keys same means replace entry
+                        {                            
+                            replace = true;
+                            break; //dont like using break -- but it speeds it up and once a match is found no longer required to search as primary keys are unique
+                        }
+                    }
+
+                    if (replace == true) //query replacing with new uploadTable entry
+                    {
+                        //loop through for each header
+                        for (int j = 0; j <= uploadTable.Columns.Count - 1; j++)
+                        {
+                            Array.Resize(ref queryArray, queryArray.Length + 1);
+                            queryArray[queryArray.Length - 1] = "UPDATE " + uploadTableLocation +
+                            " SET " + uploadTable.Columns[j].ColumnName.ToString() + " = " + uploadTable.Rows[i][j].ToString() +
+                            " WHERE " + uploadTable.Columns[0].ColumnName.ToString() + " = " + uploadTable.Rows[i][0].ToString() + ");";
+
+                        }                      
+                        
+                    }
+                    else if (replace == false) //query adding new from uploadTable entry
+                    {
+
+                        switch (uploadTableLocation)
+                        {
+                            case "table_user":
+
+                                //Create query then resizes and adds it to the array of queries
+                                Array.Resize(ref queryArray, queryArray.Length + 1);
+                                queryArray[queryArray.Length - 1] = "INSERT INTO " + uploadTableLocation + "('user_id', 'name_first', 'name_last', 'hometown', 'gender', 'statusRelationship', 'currentTown', 'workplace_id', 'school_id') " +
+                                    "VALUES(" + uploadTable.Rows[i][0] + ", '" + uploadTable.Rows[i][1] + "', '" + uploadTable.Rows[i][2] + "', '" +
+                                    uploadTable.Rows[i][3] + "', '" + uploadTable.Rows[i][4] + "', '" + uploadTable.Rows[i][5] + "', '" + uploadTable.Rows[i][6] + "', "+ uploadTable.Rows[i][7]+
+                                    ", " + uploadTable.Rows[i][8] + ");";
+                                //--------------------------------------------------------------
+
+
+                                break;
+                            case "table_workplace"://requires the user_id to exist in the user table
+                                                   //this will have two queries -- one to create the new workplace, one to replace the workplace field in 'table_user' with foreign key
+                                Array.Resize(ref queryArray, queryArray.Length + 1); //first query to create the workplace query
+                                queryArray[queryArray.Length - 1] = "INSERT INTO " + uploadTableLocation + "('workplace_id', 'workplace_name', 'employment_date_start', 'employment_date_end') " +
+                                    "VALUES(" + uploadTable.Rows[i][0] + ", '" + uploadTable.Rows[i][1] + "', '" + uploadTable.Rows[i][2] + "', '" + uploadTable.Rows[i][3] + "'" + ");";
+                               
+                                break;
+                            case "table_school"://requires the user_id to exist in the user table
+                                Array.Resize(ref queryArray, queryArray.Length + 1); //first query to create the workplace query
+                                queryArray[queryArray.Length - 1] = "INSERT INTO " + uploadTableLocation + "('school_id', 'school_name', 'school_date_start', 'school_date_end') " +
+                                    "VALUES(" + uploadTable.Rows[i][0] + ", '" + uploadTable.Rows[i][1] + "', '" + uploadTable.Rows[i][2] + "', '" + uploadTable.Rows[i][3] + "'" + ");";
+                               
+                                break;
+                            case "table_friends":
+
+                                Array.Resize(ref queryArray, queryArray.Length + 1);
+                                queryArray[queryArray.Length - 1] = "INSERT INTO " + uploadTableLocation + "('unique_id', 'friend_id', 'user_id') " +
+                                    "VALUES(" + uploadTable.Rows[i][0] + ", " + uploadTable.Rows[i][1] + ", " + uploadTable.Rows[i][2] + ");";
+                                
+                                break;
+                            case "table_messages":
+
+                                Array.Resize(ref queryArray, queryArray.Length + 1);
+                                queryArray[queryArray.Length - 1] = "INSERT INTO " + uploadTableLocation + "('message_id', 'sender_id', 'reciever_id', 'data_time', 'text_message') " +
+                                    "VALUES(" + uploadTable.Rows[i][0] + ", " + uploadTable.Rows[i][1] + ", " + uploadTable.Rows[i][2] + ", '" + uploadTable.Rows[i][3] + "', '" +
+                                   uploadTable.Rows[i][4] + "'" + ");";
+                                
+                                break;
+                        }
+
+
+
+                    }
+                }
+
+
             }
                
             //-----------------
 
 
-
-            //create a list of queries to apply to database -- create queries by comparing the two tables
-            string[] queryArray = new string[0];
-            //for (int i = 0; i <= )
-            //{
-
-            //}
-
-            //----------------------
 
 
 
@@ -493,6 +556,8 @@ namespace ISAD157_Coursework_NathanEverett
 
         private void BTNUploadGroup_Click(object sender, EventArgs e)
         {
+
+            newTableData = DGVTableview.DataSource as DataTable;      
             uploadTable(newTableData);
         }
     }
