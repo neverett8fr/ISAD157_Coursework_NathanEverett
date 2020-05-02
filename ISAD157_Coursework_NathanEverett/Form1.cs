@@ -388,9 +388,9 @@ namespace ISAD157_Coursework_NathanEverett
 
                             //Create query then resizes and adds it to the array of queries
                             Array.Resize(ref queryArray, queryArray.Length + 1);
-                            queryArray[queryArray.Length - 1] = "INSERT INTO " + uploadTableLocation + "('user_id', 'name_first', 'name_last', 'hometown', 'gender', 'statusRelationship', 'currentTown', 'workplace_id', 'school_id') "+
-                                "VALUES("+ uploadTable.Rows[i][0] +", '"+ uploadTable.Rows[i][1]+"', '"+ uploadTable.Rows[i][2]+"', '"+
-                                uploadTable.Rows[i][4]+"', '" + uploadTable.Rows[i][3] + "', '" + "Unknown" + "', '" + uploadTable.Rows[i][5] + "', 0, 0"+ ");";
+                            queryArray[queryArray.Length - 1] = "INSERT INTO " + uploadTableLocation + @"(user_id, name_first, name_last, hometown, gender, statusRelationship, currentTown, workplace_id, school_id) "+
+                                @"VALUES("+ uploadTable.Rows[i][0] +@", '"+ uploadTable.Rows[i][1]+@"', '"+ uploadTable.Rows[i][2]+@"', '"+
+                                uploadTable.Rows[i][4]+@"', '" + uploadTable.Rows[i][3] + @"', '" + "Unknown" + @"', '" + uploadTable.Rows[i][5] + @"', 0, 0"+ ");";
                             //--------------------------------------------------------------
 
 
@@ -398,7 +398,7 @@ namespace ISAD157_Coursework_NathanEverett
                         case "table_workplace"://requires the user_id to exist in the user table
                             //this will have two queries -- one to create the new workplace, one to replace the workplace field in 'table_user' with foreign key
                             Array.Resize(ref queryArray, queryArray.Length + 1); //first query to create the workplace query
-                            queryArray[queryArray.Length - 1] = "INSERT INTO " + uploadTableLocation + "('workplace_id', 'workplace_name', 'employment_date_start', 'employment_date_end') " +
+                            queryArray[queryArray.Length - 1] = "INSERT INTO " + uploadTableLocation + "(workplace_id, workplace_name, employment_date_start, employment_date_end) " +
                                 "VALUES(" + randomNum + ", '" + uploadTable.Rows[i][1] + "', '" + "0001/01/01" + "', '" + "0001/01/01" + "'" + ");";
                             
                             //second query to replace the field of user where id = specified
@@ -409,7 +409,7 @@ namespace ISAD157_Coursework_NathanEverett
                             break;
                         case "table_school"://requires the user_id to exist in the user table
                             Array.Resize(ref queryArray, queryArray.Length + 1); //first query to create the workplace query
-                            queryArray[queryArray.Length - 1] = "INSERT INTO " + uploadTableLocation + "('school_id', 'school_name', 'school_date_start', 'school_date_end') " +
+                            queryArray[queryArray.Length - 1] = "INSERT INTO " + uploadTableLocation + "(school_id, school_name, school_date_start, school_date_end) " +
                                 "VALUES(" + randomNum + ", '" + uploadTable.Rows[i][1] + "', '" + "0001/01/01" + "', '" + "0001/01/01" + "'" + ");";
                                                         
                             //second query to replace the field of user where id = specified
@@ -420,7 +420,7 @@ namespace ISAD157_Coursework_NathanEverett
                         case "table_friends":
 
                             Array.Resize(ref queryArray, queryArray.Length + 1);
-                            queryArray[queryArray.Length - 1] = "INSERT INTO " + uploadTableLocation + "('unique_id', 'friend_id', 'user_id') " +
+                            queryArray[queryArray.Length - 1] = "INSERT INTO " + uploadTableLocation + "(unique_id, friend_id, user_id) " +
                                 "VALUES(" + randomNum + ", " + uploadTable.Rows[i][0] + ", " + uploadTable.Rows[i][1] + ");";
 
                             break;
@@ -433,7 +433,7 @@ namespace ISAD157_Coursework_NathanEverett
                             //newRow[4] = uploadTable.Rows[i][3];//textmessage
 
                             Array.Resize(ref queryArray, queryArray.Length + 1);
-                            queryArray[queryArray.Length - 1] = "INSERT INTO " + uploadTableLocation + "('message_id', 'sender_id', 'reciever_id', 'data_time', 'text_message') " +
+                            queryArray[queryArray.Length - 1] = "INSERT INTO " + uploadTableLocation + "(message_id, sender_id, reciever_id, data_time, text_message) " +
                                 "VALUES(" + randomNum + ", " + uploadTable.Rows[i][0] + ", " + uploadTable.Rows[i][1] +", '" +  uploadTable.Rows[i][2]  + "', '"+
                                uploadTable.Rows[i][3]+"'"+ ");";
 
@@ -479,8 +479,8 @@ namespace ISAD157_Coursework_NathanEverett
 
                                 //Create query then resizes and adds it to the array of queries
                                 Array.Resize(ref queryArray, queryArray.Length + 1);
-                                queryArray[queryArray.Length - 1] = "INSERT INTO " + uploadTableLocation + "('user_id', 'name_first', 'name_last', 'hometown', 'gender', 'statusRelationship', 'currentTown', 'workplace_id', 'school_id') " +
-                                    "VALUES(" + uploadTable.Rows[i][0] + ", '" + uploadTable.Rows[i][1] + "', '" + uploadTable.Rows[i][2] + "', '" +
+                                queryArray[queryArray.Length - 1] = @"INSERT INTO " + uploadTableLocation + @"(user_id, name_first, name_last, hometown, gender, statusRelationship, currentTown, workplace_id, school_id) " +
+                                    @"VALUES(" + uploadTable.Rows[i][0] + ", '" + uploadTable.Rows[i][1] + "', '" + uploadTable.Rows[i][2] + "', '" +
                                     uploadTable.Rows[i][3] + "', '" + uploadTable.Rows[i][4] + "', '" + uploadTable.Rows[i][5] + "', '" + uploadTable.Rows[i][6] + "', "+ uploadTable.Rows[i][7]+
                                     ", " + uploadTable.Rows[i][8] + ");";
                                 //--------------------------------------------------------------
@@ -490,61 +490,57 @@ namespace ISAD157_Coursework_NathanEverett
                             case "table_workplace"://requires the user_id to exist in the user table
                                                    //this will have two queries -- one to create the new workplace, one to replace the workplace field in 'table_user' with foreign key
                                 Array.Resize(ref queryArray, queryArray.Length + 1); //first query to create the workplace query
-                                queryArray[queryArray.Length - 1] = "INSERT INTO " + uploadTableLocation + "('workplace_id', 'workplace_name', 'employment_date_start', 'employment_date_end') " +
+                                queryArray[queryArray.Length - 1] = "INSERT INTO " + uploadTableLocation + "(workplace_id, workplace_name, employment_date_start, employment_date_end) " +
                                     "VALUES(" + uploadTable.Rows[i][0] + ", '" + uploadTable.Rows[i][1] + "', '" + uploadTable.Rows[i][2] + "', '" + uploadTable.Rows[i][3] + "'" + ");";
                                
                                 break;
                             case "table_school"://requires the user_id to exist in the user table
                                 Array.Resize(ref queryArray, queryArray.Length + 1); //first query to create the workplace query
-                                queryArray[queryArray.Length - 1] = "INSERT INTO " + uploadTableLocation + "('school_id', 'school_name', 'school_date_start', 'school_date_end') " +
+                                queryArray[queryArray.Length - 1] = "INSERT INTO " + uploadTableLocation + "(school_id, school_name, school_date_start, school_date_end) " +
                                     "VALUES(" + uploadTable.Rows[i][0] + ", '" + uploadTable.Rows[i][1] + "', '" + uploadTable.Rows[i][2] + "', '" + uploadTable.Rows[i][3] + "'" + ");";
                                
                                 break;
                             case "table_friends":
 
                                 Array.Resize(ref queryArray, queryArray.Length + 1);
-                                queryArray[queryArray.Length - 1] = "INSERT INTO " + uploadTableLocation + "('unique_id', 'friend_id', 'user_id') " +
+                                queryArray[queryArray.Length - 1] = "INSERT INTO " + uploadTableLocation + "(unique_id, friend_id, user_id) " +
                                     "VALUES(" + uploadTable.Rows[i][0] + ", " + uploadTable.Rows[i][1] + ", " + uploadTable.Rows[i][2] + ");";
                                 
                                 break;
                             case "table_messages":
 
                                 Array.Resize(ref queryArray, queryArray.Length + 1);
-                                queryArray[queryArray.Length - 1] = "INSERT INTO " + uploadTableLocation + "('message_id', 'sender_id', 'reciever_id', 'data_time', 'text_message') " +
+                                queryArray[queryArray.Length - 1] = "INSERT INTO " + uploadTableLocation + "(message_id, sender_id, reciever_id, data_time, text_message) " +
                                     "VALUES(" + uploadTable.Rows[i][0] + ", " + uploadTable.Rows[i][1] + ", " + uploadTable.Rows[i][2] + ", '" + uploadTable.Rows[i][3] + "', '" +
                                    uploadTable.Rows[i][4] + "'" + ");";
                                 
                                 break;
                         }
 
-
-
                     }
                 }
 
 
             }
-               
             //-----------------
 
 
+            //acting on the queries created earlier
+            MySqlConnection connection = new MySqlConnection(connectionString);
+
+            connection.Open();
+            for (int i = 0; i <= queryArray.Length - 1; i++)
+            {               
+                MySqlCommand sqlCommand = connection.CreateCommand();
+                sqlCommand.CommandText = queryArray[i];
+                //MessageBox.Show(sqlCommand.CommandText.ToString());
+                sqlCommand.ExecuteNonQuery();
+                
+            }
+            connection.Close();
 
 
-
-
-                //compare the tables -- search if entry exists in old, if yes check if changed, if yes then update -- search if entry exists, if no then add one
-                //for (int i = 0; i <= )
-
-
-                //----------------------------
-
-
-
-
-                //upload the tables again where changed e.g. if there's no id = 555 then add that with single query -- loop for all rows in constructed table where changed
-
-
-
+            //---------------------
 
         }
         private void BTNLoadCSV_Click(object sender, EventArgs e)
