@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Data.Common;
 using System.Data.OleDb;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -16,6 +17,8 @@ using System.Windows.Forms.VisualStyles;
 using MySql.Data.MySqlClient;
 using MySqlX.XDevAPI.Relational;
 
+using System.Text.RegularExpressions;
+
 
 
 namespace ISAD157_Coursework_NathanEverett
@@ -23,7 +26,7 @@ namespace ISAD157_Coursework_NathanEverett
     public partial class Form1 : Form
     {
         DataSet dataSetLocal;
-        DataTable newTableData;
+
         public Form1()
         {
             InitializeComponent();
@@ -31,7 +34,7 @@ namespace ISAD157_Coursework_NathanEverett
 
         DataSet connectMySQL(string connectionString)
         {
-                        
+
             MySqlConnection connection = null;
 
             DataSet output;
@@ -41,24 +44,23 @@ namespace ISAD157_Coursework_NathanEverett
                 connection = new MySqlConnection(connectionString);
                 connection.Open();
 
-               
+
                 string query = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE';"; //this query returns the names of the tables in use and puts it's data into a table
                 MySqlDataAdapter dataAdapter = new MySqlDataAdapter(query, connection);
-                output = new DataSet();                 
+                output = new DataSet();
                 dataAdapter.Fill(output, "table_names");
 
-                //DGVTableview.DataSource = dataSetLocal.Tables["table_names"];
 
                 for (int i = 0; i <= output.Tables["table_names"].Rows.Count - 1; i++) //repeat for amount of tables
                 {
-                    query = "SELECT * FROM " + output.Tables["table_names"].Rows[i][0] +  ";"; //this creates a query which will return all the tables in the database
+                    query = "SELECT * FROM " + output.Tables["table_names"].Rows[i][0] + ";"; //this creates a query which will return all the tables in the database
                     dataAdapter = new MySqlDataAdapter(query, connection);
                     dataAdapter.Fill(output, output.Tables["table_names"].Rows[i][0].ToString()); //this populates the DataSet variable with all the tables
                     CMBTableSelect.Items.Add(output.Tables["table_names"].Rows[i][0].ToString());
                 }
 
 
-                
+
 
 
 
@@ -88,15 +90,11 @@ namespace ISAD157_Coursework_NathanEverett
             DataTable tableOutput; //the table returned from the function
 
             //setup excel connection |
-            OleDbConnection dbConnection = null;                 
+            OleDbConnection dbConnection = null;
             if (Path.GetExtension(excelDocument.FileName) == ".csv") //checks it's correct / expected format
             {
                 //creates a string used to setup connection
                 //HDR = yes -- first row is header
-
-                //MessageBox.Show(Path.GetDirectoryName(excelDocument.FileName).ToString());
-                //MessageBox.Show(Path.GetFileName(excelDocument.FileName).ToString());
-                //MessageBox.Show(excelDocument.FileName.ToString());
                 string connectionString = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source="
                 + Path.GetDirectoryName(excelDocument.FileName) + ";Extended Properties=\"Text;HDR=Yes;IMEX=1\"";
 
@@ -140,7 +138,7 @@ namespace ISAD157_Coursework_NathanEverett
         }
 
         public string setupConnection()
-        {
+        {   //below sets up form stuff -- more complicated than needed but works
             Form FRMReturnConnection = new Form();
             RadioButton RDBSetupConnection = new RadioButton();
             RadioButton RDBUsePreset = new RadioButton();
@@ -177,21 +175,21 @@ namespace ISAD157_Coursework_NathanEverett
             FRMReturnConnection.AcceptButton = BTNSubmit;
             FRMReturnConnection.CancelButton = BTNCancel;
 
-            
+
 
 
             DialogResult dialogResult = FRMReturnConnection.ShowDialog();
 
             if (dialogResult.ToString() == "OK" && RDBUsePreset.Checked == true)
-            {                
+            {
                 return "server=proj-mysql.uopnet.plymouth.ac.uk;userid=ISAD157_NEverett;password=ISAD157_22225597;database=isad157_neverett";
             }
             else if (dialogResult.ToString() == "OK" && RDBSetupConnection.Checked == true)
-            {                
-                string setupConnectionEnterCredentials()
+            {
+                string setupConnectionEnterCredentials() //creates form which returns a string to whatever calls it
                 {
                     Form FRMReturnInformation = new Form();
-                    
+
                     Button BTNSubmitInformation = new Button();
                     Button BTNCancelInformation = new Button();
 
@@ -234,7 +232,7 @@ namespace ISAD157_Coursework_NathanEverett
                     BTNCancelInformation.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
 
                     FRMReturnInformation.ClientSize = new Size(396, 220);
-                    FRMReturnInformation.Controls.AddRange(new Control[] { BTNSubmitInformation, BTNCancelInformation, LBLUserID, LBLServer, 
+                    FRMReturnInformation.Controls.AddRange(new Control[] { BTNSubmitInformation, BTNCancelInformation, LBLUserID, LBLServer,
                     LBLPassword, LBLDatabase, TXTUserID, TXTServer, TXTPassword, TXTDatabase});
 
                     FRMReturnInformation.FormBorderStyle = FormBorderStyle.FixedDialog;
@@ -252,13 +250,13 @@ namespace ISAD157_Coursework_NathanEverett
                         string connectionStringConstructor =
                             "server=" + TXTServer.Text +
                             ";userid=" + TXTUserID.Text + ";password=" + TXTPassword.Text + ";database=" + TXTDatabase.Text;
-                                                
+
                         return connectionStringConstructor;
                     }
 
 
 
-                        return null;
+                    return null;
                 }
 
                 return setupConnectionEnterCredentials();
@@ -270,291 +268,172 @@ namespace ISAD157_Coursework_NathanEverett
         }
         private void BTNSelectDataSource_Click(object sender, EventArgs e)
         {
-            
 
-            dataSetLocal = connectMySQL(setupConnection());       
+            dataSetLocal = connectMySQL(setupConnection());
+            for (int i = 0; i <= CMBTableSelect.Items.Count - 1; i++) {
+                CMBTableSelectQuery.Items.Add(CMBTableSelect.Items[i]);
+            }
+            MessageBox.Show("Database Loaded In" + Environment.NewLine + "Use Dropdown To Select Table" + Environment.NewLine + "Click Cells To Populate User Profile");
 
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            DataTable dataTable = dataSetLocal.Tables[CMBTableSelect.Text];
-            DGVTableview.DataSource = dataTable;
+
+            DGVTableview.DataSource = dataSetLocal.Tables[CMBTableSelect.Text];
 
         }
 
 
 
-        void uploadTable(DataTable uploadTable)
-        {
-            //get info to upload to a server and any existing tables / info
-            string connectionString = setupConnection();
-            DataSet oldDataSet = connectMySQL(connectionString);
-            //--------------
-
-            //choose which table to upload to from the existing tables;
-            string chooseUploadTableLocation()
-            {
-                Form FRMUploadLocation = new Form();
-
-                Button BTNSubmitInformation = new Button();
-                Button BTNCancelInformation = new Button();
-
-                Label LBLText = new Label();
-                ComboBox CMBTables = new ComboBox();
-
-
-                //choose which table to upload to from exising tables;
-                for (int i = 0; i <= oldDataSet.Tables["table_names"].Rows.Count - 1; i++)
-                {
-                    CMBTables.Items.Add(oldDataSet.Tables["table_names"].Rows[i][0]);
-                }
-
-                LBLText.Text = "Please select which table to upload to: ";                
-                BTNSubmitInformation.Text = "Submit";
-                BTNCancelInformation.Text = "Cancel";
-
-                BTNSubmitInformation.SetBounds(228, 80, 75, 23);
-                BTNCancelInformation.SetBounds(309, 80, 75, 23);
-                LBLText.SetBounds(9, 10, 200, 13);       
-                CMBTables.SetBounds(9, 25, 200, 13);
-
-                BTNSubmitInformation.DialogResult = DialogResult.OK;
-                BTNCancelInformation.DialogResult = DialogResult.Cancel;
-
-                BTNSubmitInformation.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-                BTNCancelInformation.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-
-                FRMUploadLocation.ClientSize = new Size(396, 100);
-                FRMUploadLocation.Controls.AddRange(new Control[] { BTNSubmitInformation, BTNCancelInformation, LBLText, CMBTables});
-
-                FRMUploadLocation.FormBorderStyle = FormBorderStyle.FixedDialog;
-                FRMUploadLocation.StartPosition = FormStartPosition.CenterScreen;
-                FRMUploadLocation.MinimizeBox = false;
-                FRMUploadLocation.MaximizeBox = false;
-                FRMUploadLocation.AcceptButton = BTNSubmitInformation;
-                FRMUploadLocation.CancelButton = BTNCancelInformation;
-
-
-                DialogResult output = FRMUploadLocation.ShowDialog();
-
-                if (output.ToString() == "OK")
-                {
-                    string tableOutput = CMBTables.Text;
-
-                    return tableOutput;
-                }
-
-
-
-                return null;
-            }
-            string uploadTableLocation = chooseUploadTableLocation(); //calls function which returns which table the file should be uploaded to on user input
-            //----------------------
-
-
-
-            //check headers same -- convert if not
-            bool sameHeaders = true; //excel document has different names for headers and in different orders as the database tables
-            for (int i = 0; i <= uploadTable.Columns.Count - 1; i++)
-            {                
-                if (uploadTable.Columns[i].ColumnName != oldDataSet.Tables[uploadTableLocation].Columns[i].ColumnName)
-                {                    
-                    sameHeaders = false;
-                }
-            }
-
-            string[] queryArray = new string[0];
-            if (sameHeaders == false) //if false create queries / convert for all entries // if false its from the csv file
-            {               
-                Random rnd = new Random();
-                for (int i = 0; i <= uploadTable.Rows.Count - 1; i++)
-                {
-                    int randomNum = rnd.Next(1, 99999999);
-                    switch (uploadTableLocation)
-                    {
-                        case "table_user":
-                            //1st column both user_id = UserID
-                            //newRow["user_id"] = "Smith";
-                            //newRow["name_first"] = "Smith";
-                            //newRow["name_last"] = "Smith";
-                            //newRow["hometown"] = "Smith";
-                            //newRow["gender"] = "Smith";
-                            //newRow["statusRelationship"] = "Smith";
-                            //newRow["currentTown"] = "Smith";
-                            //newRow["workplace_id"] = "Smith";
-                            //newRow["school_id"] = "Smith";
-
-
-                            //Create query then resizes and adds it to the array of queries
-                            Array.Resize(ref queryArray, queryArray.Length + 1);
-                            queryArray[queryArray.Length - 1] = "INSERT INTO " + uploadTableLocation + @"(user_id, name_first, name_last, hometown, gender, statusRelationship, currentTown, workplace_id, school_id) "+
-                                @"VALUES("+ uploadTable.Rows[i][0] +@", '"+ uploadTable.Rows[i][1]+@"', '"+ uploadTable.Rows[i][2]+@"', '"+
-                                uploadTable.Rows[i][4]+@"', '" + uploadTable.Rows[i][3] + @"', '" + "Unknown" + @"', '" + uploadTable.Rows[i][5] + @"', 0, 0"+ ");";
-                            //--------------------------------------------------------------
-
-
-                            break;
-                        case "table_workplace"://requires the user_id to exist in the user table
-                            //this will have two queries -- one to create the new workplace, one to replace the workplace field in 'table_user' with foreign key
-                            Array.Resize(ref queryArray, queryArray.Length + 1); //first query to create the workplace query
-                            queryArray[queryArray.Length - 1] = "INSERT INTO " + uploadTableLocation + "(workplace_id, workplace_name, employment_date_start, employment_date_end) " +
-                                "VALUES(" + randomNum + ", '" + uploadTable.Rows[i][1] + "', '" + "0001/01/01" + "', '" + "0001/01/01" + "'" + ");";
-                            
-                            //second query to replace the field of user where id = specified
-                            Array.Resize(ref queryArray, queryArray.Length + 1);
-                            queryArray[queryArray.Length - 1] = "UPDATE table_user" + " SET workplace_id = " + randomNum + " WHERE user_id = " + uploadTable.Rows[i][0]+ ");";
-
-
-                            break;
-                        case "table_school"://requires the user_id to exist in the user table
-                            Array.Resize(ref queryArray, queryArray.Length + 1); //first query to create the workplace query
-                            queryArray[queryArray.Length - 1] = "INSERT INTO " + uploadTableLocation + "(school_id, school_name, school_date_start, school_date_end) " +
-                                "VALUES(" + randomNum + ", '" + uploadTable.Rows[i][1] + "', '" + "0001/01/01" + "', '" + "0001/01/01" + "'" + ");";
-                                                        
-                            //second query to replace the field of user where id = specified
-                            Array.Resize(ref queryArray, queryArray.Length + 1);
-                            queryArray[queryArray.Length - 1] = "UPDATE table_user" + " SET school_id = " + randomNum + " WHERE user_id = " + uploadTable.Rows[i][0] + ");";
-
-                            break;
-                        case "table_friends":
-
-                            Array.Resize(ref queryArray, queryArray.Length + 1);
-                            queryArray[queryArray.Length - 1] = "INSERT INTO " + uploadTableLocation + "(unique_id, friend_id, user_id) " +
-                                "VALUES(" + randomNum + ", " + uploadTable.Rows[i][0] + ", " + uploadTable.Rows[i][1] + ");";
-
-                            break;
-                        case "table_messages":
-
-                            //newRow[0] = randomNum;//messageid //unknown have to create one and check doesnt exist
-                            //newRow[1] = uploadTable.Rows[i][0];//senderid
-                            //newRow[2] = uploadTable.Rows[i][1];//recieverid
-                            //newRow[3] = uploadTable.Rows[i][2];//datetime
-                            //newRow[4] = uploadTable.Rows[i][3];//textmessage
-
-                            Array.Resize(ref queryArray, queryArray.Length + 1);
-                            queryArray[queryArray.Length - 1] = "INSERT INTO " + uploadTableLocation + "(message_id, sender_id, reciever_id, data_time, text_message) " +
-                                "VALUES(" + randomNum + ", " + uploadTable.Rows[i][0] + ", " + uploadTable.Rows[i][1] +", '" +  uploadTable.Rows[i][2]  + "', '"+
-                               uploadTable.Rows[i][3]+"'"+ ");";
-
-                            break;
-                    }
-                }
-            }
-            else if (sameHeaders == true) //same headers means can take the information directly from same column names without converting the csv file
-            {                
-                //if headers same -- check new entry against old entry primary keys to see if data changed, if changed update, if doesnt exist create, if same ignore
-                //think about ways to optimise this because this will take a very long time with large datasets and my bad searching methods
-                for (int i = 0; i <= uploadTable.Rows.Count - 1; i++)
-                {
-                    bool replace = false;
-                    for (int j = 0; j <= oldDataSet.Tables[uploadTableLocation].Rows.Count - 1; j++)
-                    {                        
-                        if (oldDataSet.Tables[uploadTableLocation].Rows[j][0].ToString() == uploadTable.Rows[i][0].ToString()) //if primary keys same means replace entry
-                        {                            
-                            replace = true;
-                            break; //dont like using break -- but it speeds it up and once a match is found no longer required to search as primary keys are unique
-                        }
-                    }
-
-                    if (replace == true) //query replacing with new uploadTable entry
-                    {
-                        //loop through for each header
-                        for (int j = 0; j <= uploadTable.Columns.Count - 1; j++)
-                        {
-                            Array.Resize(ref queryArray, queryArray.Length + 1);
-                            queryArray[queryArray.Length - 1] = "UPDATE " + uploadTableLocation +
-                            " SET " + uploadTable.Columns[j].ColumnName.ToString() + " = " + uploadTable.Rows[i][j].ToString() +
-                            " WHERE " + uploadTable.Columns[0].ColumnName.ToString() + " = " + uploadTable.Rows[i][0].ToString() + ");";
-
-                        }                      
-                        
-                    }
-                    else if (replace == false) //query adding new from uploadTable entry
-                    {
-
-                        switch (uploadTableLocation)
-                        {
-                            case "table_user":
-
-                                //Create query then resizes and adds it to the array of queries
-                                Array.Resize(ref queryArray, queryArray.Length + 1);
-                                queryArray[queryArray.Length - 1] = @"INSERT INTO " + uploadTableLocation + @"(user_id, name_first, name_last, hometown, gender, statusRelationship, currentTown, workplace_id, school_id) " +
-                                    @"VALUES(" + uploadTable.Rows[i][0] + ", '" + uploadTable.Rows[i][1] + "', '" + uploadTable.Rows[i][2] + "', '" +
-                                    uploadTable.Rows[i][3] + "', '" + uploadTable.Rows[i][4] + "', '" + uploadTable.Rows[i][5] + "', '" + uploadTable.Rows[i][6] + "', "+ uploadTable.Rows[i][7]+
-                                    ", " + uploadTable.Rows[i][8] + ");";
-                                //--------------------------------------------------------------
-
-
-                                break;
-                            case "table_workplace"://requires the user_id to exist in the user table
-                                                   //this will have two queries -- one to create the new workplace, one to replace the workplace field in 'table_user' with foreign key
-                                Array.Resize(ref queryArray, queryArray.Length + 1); //first query to create the workplace query
-                                queryArray[queryArray.Length - 1] = "INSERT INTO " + uploadTableLocation + "(workplace_id, workplace_name, employment_date_start, employment_date_end) " +
-                                    "VALUES(" + uploadTable.Rows[i][0] + ", '" + uploadTable.Rows[i][1] + "', '" + uploadTable.Rows[i][2] + "', '" + uploadTable.Rows[i][3] + "'" + ");";
-                               
-                                break;
-                            case "table_school"://requires the user_id to exist in the user table
-                                Array.Resize(ref queryArray, queryArray.Length + 1); //first query to create the workplace query
-                                queryArray[queryArray.Length - 1] = "INSERT INTO " + uploadTableLocation + "(school_id, school_name, school_date_start, school_date_end) " +
-                                    "VALUES(" + uploadTable.Rows[i][0] + ", '" + uploadTable.Rows[i][1] + "', '" + uploadTable.Rows[i][2] + "', '" + uploadTable.Rows[i][3] + "'" + ");";
-                               
-                                break;
-                            case "table_friends":
-
-                                Array.Resize(ref queryArray, queryArray.Length + 1);
-                                queryArray[queryArray.Length - 1] = "INSERT INTO " + uploadTableLocation + "(unique_id, friend_id, user_id) " +
-                                    "VALUES(" + uploadTable.Rows[i][0] + ", " + uploadTable.Rows[i][1] + ", " + uploadTable.Rows[i][2] + ");";
-                                
-                                break;
-                            case "table_messages":
-
-                                Array.Resize(ref queryArray, queryArray.Length + 1);
-                                queryArray[queryArray.Length - 1] = "INSERT INTO " + uploadTableLocation + "(message_id, sender_id, reciever_id, data_time, text_message) " +
-                                    "VALUES(" + uploadTable.Rows[i][0] + ", " + uploadTable.Rows[i][1] + ", " + uploadTable.Rows[i][2] + ", '" + uploadTable.Rows[i][3] + "', '" +
-                                   uploadTable.Rows[i][4] + "'" + ");";
-                                
-                                break;
-                        }
-
-                    }
-                }
-
-
-            }
-            //-----------------
-
-
-            //acting on the queries created earlier
-            MySqlConnection connection = new MySqlConnection(connectionString);
-
-            connection.Open();
-            for (int i = 0; i <= queryArray.Length - 1; i++)
-            {               
-                MySqlCommand sqlCommand = connection.CreateCommand();
-                sqlCommand.CommandText = queryArray[i];
-                //MessageBox.Show(sqlCommand.CommandText.ToString());
-                sqlCommand.ExecuteNonQuery();
-                
-            }
-            connection.Close();
-
-
-            //---------------------
-
-        }
         private void BTNLoadCSV_Click(object sender, EventArgs e)
         {
-            OFDLoadExcel.ShowDialog();
-            newTableData = readExcelTable(OFDLoadExcel);
-            DGVTableview.DataSource = newTableData;
+            OFDLoadExcel.ShowDialog(); //opens dialog box which allows selection of local file
+            DGVTableview.DataSource = readExcelTable(OFDLoadExcel); //sets datagridview as the result of function (imports OFD to function to use)
         }
 
-        private void BTNUploadGroup_Click(object sender, EventArgs e)
+
+        private void BTNQuerySubmit_Click(object sender, EventArgs e)
         {
 
-            newTableData = DGVTableview.DataSource as DataTable;      
-            uploadTable(newTableData);
+            try
+            {
+                string expression = CMBQueryColumn.Text + " " + CMBQueryCondition.Text + " " + TXTQueryCondition.Text;
+                DGVQueryTable.DataSource = dataSetLocal.Tables[CMBTableSelectQuery.Text].Select(expression).CopyToDataTable(); //try as if integer
+            }
+            catch
+            {
+                try
+                {
+                    string expression = CMBQueryColumn.Text + " " + CMBQueryCondition.Text + " '" + TXTQueryCondition.Text + "'";
+                    DGVQueryTable.DataSource = dataSetLocal.Tables[CMBTableSelectQuery.Text].Select(expression).CopyToDataTable(); //if integer fails, try as string
+                }
+                catch
+                {
+                    //MessageBox.Show("Error message");
+                }
+            }
+        }
+
+        private void CMBTableSelectQuery_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            CMBQueryColumn.Items.Clear();
+            for (int i = 0; i <= dataSetLocal.Tables[CMBTableSelectQuery.Text].Columns.Count - 1; i++)
+            {
+                CMBQueryColumn.Items.Add(dataSetLocal.Tables[CMBTableSelectQuery.Text].Columns[i].ColumnName); //adds column names to combobox from table selected in other combobox
+            }
+        }
+
+
+        
+
+
+
+
+        private void DGVTableview_CellContentClick(object sender, DataGridViewCellEventArgs e) //should be able to click on any cell in any table hopefully
+        {
+
+            try
+            {
+                int userID = 0;
+                string firstName;
+                string lastName;
+                string hometown;
+                string gender;
+                string relationshipStatus;
+                string currentTown;
+                DataSet workplaces = new DataSet();
+                DataSet schools = new DataSet();
+
+                for (int i = 0; i <= DGVTableview.Columns.Count - 1; i++)
+                {
+                    if (DGVTableview.Columns[i].Name == "user_id" | DGVTableview.Columns[i].Name == "sender_id") //most tables have user_id as foreign key, sender_id refers to user_id so can use it as user_id
+                    {   //this bit finds the user_id of the row selected to use later
+                        userID = Convert.ToInt16(DGVTableview.Rows[e.RowIndex].Cells[i].Value);
+
+                        break;
+                    }
+                }
+
+                //probably would make more sense to search the localTable using c# as it's already downloaded but will use mysql to get from the server as that's what this project is about;
+
+
+                MySqlConnection connection = new MySqlConnection(setupConnection()); //defines a mySqlConnection object by getting data from function 
+                connection.Open(); 
+
+                string query = "SELECT name_first FROM table_user WHERE user_id = " + userID.ToString() + ";"; //this query returns first name from the table_user provided it matches the user_id
+                MySqlCommand sqlCommand = new MySqlCommand(query, connection); //executes query made earlier at connection specified earlier
+                firstName = Convert.ToString(sqlCommand.ExecuteScalar());
+
+                query = "SELECT name_last FROM table_user WHERE user_id = " + userID.ToString() + ";";
+                sqlCommand = new MySqlCommand(query, connection);
+                lastName = Convert.ToString(sqlCommand.ExecuteScalar());
+
+                query = "SELECT hometown FROM table_user WHERE user_id = " + userID.ToString() + ";";
+                sqlCommand = new MySqlCommand(query, connection);
+                hometown = Convert.ToString(sqlCommand.ExecuteScalar());
+
+                query = "SELECT gender FROM table_user WHERE user_id = " + userID.ToString() + ";";
+                sqlCommand = new MySqlCommand(query, connection);
+                gender = Convert.ToString(sqlCommand.ExecuteScalar());
+
+                query = "SELECT statusRelationship FROM table_user WHERE user_id = " + userID.ToString() + ";";
+                sqlCommand = new MySqlCommand(query, connection);
+                relationshipStatus = Convert.ToString(sqlCommand.ExecuteScalar());
+
+                query = "SELECT currentTown FROM table_user WHERE user_id = " + userID.ToString() + ";";
+                sqlCommand = new MySqlCommand(query, connection);
+                currentTown = Convert.ToString(sqlCommand.ExecuteScalar());
+
+
+
+                query = "SELECT workplace_name FROM table_workplace WHERE user_id = " + userID.ToString() + ";"; //populates dataset with all workplace names with user_id as foreign key
+                MySqlDataAdapter dataAdapter = new MySqlDataAdapter(query, connection);
+                dataAdapter.Fill(workplaces, "table_workplaces");
+
+                query = "SELECT school_name FROM table_school WHERE user_id = " + userID.ToString() + ";";
+                dataAdapter = new MySqlDataAdapter(query, connection);
+                dataAdapter.Fill(schools, "table_school");
+
+                connection.Close();
+
+                string schoolWorkplaceString = "";
+                schoolWorkplaceString += "Workplaces: " + Environment.NewLine;
+                for (int i = 0; i <= workplaces.Tables["table_workplaces"].Rows.Count - 1; i++)
+                {
+                    schoolWorkplaceString += " -- " + workplaces.Tables["table_workplaces"].Rows[i][0].ToString() + Environment.NewLine;
+                }
+                schoolWorkplaceString += Environment.NewLine + "Schools: " + Environment.NewLine;
+                for (int i = 0; i <= schools.Tables["table_school"].Rows.Count - 1; i++)
+                {
+                    schoolWorkplaceString += " -- " + schools.Tables["table_school"].Rows[i][0].ToString() + Environment.NewLine;
+                }
+
+
+                RTBProfile.Text = "User Info" + Environment.NewLine + "User ID: " + userID + Environment.NewLine + "Name: " + firstName + " " + lastName +
+                    Environment.NewLine + "Hometown: " + hometown + Environment.NewLine + "Gender: " + gender +
+                    Environment.NewLine + "Relationship Status: " + relationshipStatus + Environment.NewLine + "Current Town: " + currentTown +
+                    Environment.NewLine + Environment.NewLine + schoolWorkplaceString; 
+
+
+
+
+                Regex regExp = new Regex("Workplaces|Schools|User Info"); //very basic Regex statement checking if any of text matches words in regex
+                foreach (Match match in regExp.Matches(RTBProfile.Text))
+                {
+                    RTBProfile.Select(match.Index, match.Length);
+                    RTBProfile.SelectionFont = new Font("New Times Roman", 15); // if regex matches -- formats the text
+
+                }
+            }
+            catch { }
+
+
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }
