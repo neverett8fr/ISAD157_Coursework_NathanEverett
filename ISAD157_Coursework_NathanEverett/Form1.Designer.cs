@@ -28,26 +28,27 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.BTNSelectDataSource = new System.Windows.Forms.Button();
             this.CMBTableSelect = new System.Windows.Forms.ComboBox();
             this.DGVTableview = new System.Windows.Forms.DataGridView();
             this.RTBProfile = new System.Windows.Forms.RichTextBox();
             this.TBCDataViews = new System.Windows.Forms.TabControl();
             this.TBPProfilePage = new System.Windows.Forms.TabPage();
+            this.label1 = new System.Windows.Forms.Label();
             this.TBPQuery = new System.Windows.Forms.TabPage();
+            this.label5 = new System.Windows.Forms.Label();
+            this.CMBQueryColumn = new System.Windows.Forms.ComboBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.BTNQuerySubmit = new System.Windows.Forms.Button();
+            this.TXTQueryCondition = new System.Windows.Forms.TextBox();
+            this.CMBQueryCondition = new System.Windows.Forms.ComboBox();
+            this.CMBTableSelectQuery = new System.Windows.Forms.ComboBox();
+            this.DGVQueryTable = new System.Windows.Forms.DataGridView();
             this.BTNLoadCSV = new System.Windows.Forms.Button();
             this.OFDLoadExcel = new System.Windows.Forms.OpenFileDialog();
-            this.label1 = new System.Windows.Forms.Label();
-            this.DGVQueryTable = new System.Windows.Forms.DataGridView();
-            this.CMBTableSelectQuery = new System.Windows.Forms.ComboBox();
-            this.CMBQueryCondition = new System.Windows.Forms.ComboBox();
-            this.TXTQueryCondition = new System.Windows.Forms.TextBox();
-            this.BTNQuerySubmit = new System.Windows.Forms.Button();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.CMBQueryColumn = new System.Windows.Forms.ComboBox();
-            this.label5 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.DGVTableview)).BeginInit();
             this.TBCDataViews.SuspendLayout();
             this.TBPProfilePage.SuspendLayout();
@@ -115,6 +116,16 @@
             this.TBPProfilePage.Text = "Profile";
             this.TBPProfilePage.UseVisualStyleBackColor = true;
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 13F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(189, 12);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(160, 30);
+            this.label1.TabIndex = 6;
+            this.label1.Text = "User Profile";
+            // 
             // TBPQuery
             // 
             this.TBPQuery.Controls.Add(this.label5);
@@ -135,6 +146,98 @@
             this.TBPQuery.Text = "Query";
             this.TBPQuery.UseVisualStyleBackColor = true;
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(108, 7);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(67, 20);
+            this.label5.TabIndex = 16;
+            this.label5.Text = "Column:";
+            // 
+            // CMBQueryColumn
+            // 
+            this.CMBQueryColumn.FormattingEnabled = true;
+            this.CMBQueryColumn.Location = new System.Drawing.Point(112, 32);
+            this.CMBQueryColumn.Name = "CMBQueryColumn";
+            this.CMBQueryColumn.Size = new System.Drawing.Size(100, 28);
+            this.CMBQueryColumn.TabIndex = 15;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(320, 9);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(82, 20);
+            this.label4.TabIndex = 14;
+            this.label4.Text = "Enter info:";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(214, 9);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(84, 20);
+            this.label3.TabIndex = 13;
+            this.label3.Text = "Condition: ";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(6, 7);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(56, 20);
+            this.label2.TabIndex = 12;
+            this.label2.Text = "Table: ";
+            // 
+            // BTNQuerySubmit
+            // 
+            this.BTNQuerySubmit.Location = new System.Drawing.Point(468, 6);
+            this.BTNQuerySubmit.Name = "BTNQuerySubmit";
+            this.BTNQuerySubmit.Size = new System.Drawing.Size(63, 52);
+            this.BTNQuerySubmit.TabIndex = 11;
+            this.BTNQuerySubmit.Text = "Go";
+            this.BTNQuerySubmit.UseVisualStyleBackColor = true;
+            this.BTNQuerySubmit.Click += new System.EventHandler(this.BTNQuerySubmit_Click);
+            // 
+            // TXTQueryCondition
+            // 
+            this.TXTQueryCondition.Location = new System.Drawing.Point(324, 34);
+            this.TXTQueryCondition.Name = "TXTQueryCondition";
+            this.TXTQueryCondition.Size = new System.Drawing.Size(100, 26);
+            this.TXTQueryCondition.TabIndex = 10;
+            // 
+            // CMBQueryCondition
+            // 
+            this.CMBQueryCondition.FormattingEnabled = true;
+            this.CMBQueryCondition.Items.AddRange(new object[] {
+            "=",
+            ">",
+            "<"});
+            this.CMBQueryCondition.Location = new System.Drawing.Point(218, 32);
+            this.CMBQueryCondition.Name = "CMBQueryCondition";
+            this.CMBQueryCondition.Size = new System.Drawing.Size(100, 28);
+            this.CMBQueryCondition.TabIndex = 9;
+            // 
+            // CMBTableSelectQuery
+            // 
+            this.CMBTableSelectQuery.FormattingEnabled = true;
+            this.CMBTableSelectQuery.Location = new System.Drawing.Point(6, 32);
+            this.CMBTableSelectQuery.Name = "CMBTableSelectQuery";
+            this.CMBTableSelectQuery.Size = new System.Drawing.Size(100, 28);
+            this.CMBTableSelectQuery.TabIndex = 8;
+            this.CMBTableSelectQuery.SelectedIndexChanged += new System.EventHandler(this.CMBTableSelectQuery_SelectedIndexChanged);
+            // 
+            // DGVQueryTable
+            // 
+            this.DGVQueryTable.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.DGVQueryTable.Location = new System.Drawing.Point(6, 64);
+            this.DGVQueryTable.Name = "DGVQueryTable";
+            this.DGVQueryTable.RowHeadersWidth = 62;
+            this.DGVQueryTable.RowTemplate.Height = 28;
+            this.DGVQueryTable.Size = new System.Drawing.Size(525, 474);
+            this.DGVQueryTable.TabIndex = 7;
+            // 
             // BTNLoadCSV
             // 
             this.BTNLoadCSV.Location = new System.Drawing.Point(195, 12);
@@ -149,108 +252,6 @@
             // 
             this.OFDLoadExcel.FileName = "openFileDialog1";
             // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 13F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(189, 12);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(160, 30);
-            this.label1.TabIndex = 6;
-            this.label1.Text = "User Profile";
-            // 
-            // DGVQueryTable
-            // 
-            this.DGVQueryTable.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.DGVQueryTable.Location = new System.Drawing.Point(6, 64);
-            this.DGVQueryTable.Name = "DGVQueryTable";
-            this.DGVQueryTable.RowHeadersWidth = 62;
-            this.DGVQueryTable.RowTemplate.Height = 28;
-            this.DGVQueryTable.Size = new System.Drawing.Size(525, 474);
-            this.DGVQueryTable.TabIndex = 7;
-            // 
-            // CMBTableSelectQuery
-            // 
-            this.CMBTableSelectQuery.FormattingEnabled = true;
-            this.CMBTableSelectQuery.Location = new System.Drawing.Point(6, 32);
-            this.CMBTableSelectQuery.Name = "CMBTableSelectQuery";
-            this.CMBTableSelectQuery.Size = new System.Drawing.Size(100, 28);
-            this.CMBTableSelectQuery.TabIndex = 8;
-            this.CMBTableSelectQuery.SelectedIndexChanged += new System.EventHandler(this.CMBTableSelectQuery_SelectedIndexChanged);
-            // 
-            // CMBQueryCondition
-            // 
-            this.CMBQueryCondition.FormattingEnabled = true;
-            this.CMBQueryCondition.Items.AddRange(new object[] {
-            "=",
-            ">",
-            "<"});
-            this.CMBQueryCondition.Location = new System.Drawing.Point(218, 32);
-            this.CMBQueryCondition.Name = "CMBQueryCondition";
-            this.CMBQueryCondition.Size = new System.Drawing.Size(100, 28);
-            this.CMBQueryCondition.TabIndex = 9;
-            // 
-            // TXTQueryCondition
-            // 
-            this.TXTQueryCondition.Location = new System.Drawing.Point(324, 34);
-            this.TXTQueryCondition.Name = "TXTQueryCondition";
-            this.TXTQueryCondition.Size = new System.Drawing.Size(100, 26);
-            this.TXTQueryCondition.TabIndex = 10;
-            // 
-            // BTNQuerySubmit
-            // 
-            this.BTNQuerySubmit.Location = new System.Drawing.Point(468, 6);
-            this.BTNQuerySubmit.Name = "BTNQuerySubmit";
-            this.BTNQuerySubmit.Size = new System.Drawing.Size(63, 52);
-            this.BTNQuerySubmit.TabIndex = 11;
-            this.BTNQuerySubmit.Text = "Go";
-            this.BTNQuerySubmit.UseVisualStyleBackColor = true;
-            this.BTNQuerySubmit.Click += new System.EventHandler(this.BTNQuerySubmit_Click);
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 7);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(56, 20);
-            this.label2.TabIndex = 12;
-            this.label2.Text = "Table: ";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(214, 9);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(84, 20);
-            this.label3.TabIndex = 13;
-            this.label3.Text = "Condition: ";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(320, 9);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(82, 20);
-            this.label4.TabIndex = 14;
-            this.label4.Text = "Enter info:";
-            // 
-            // CMBQueryColumn
-            // 
-            this.CMBQueryColumn.FormattingEnabled = true;
-            this.CMBQueryColumn.Location = new System.Drawing.Point(112, 32);
-            this.CMBQueryColumn.Name = "CMBQueryColumn";
-            this.CMBQueryColumn.Size = new System.Drawing.Size(100, 28);
-            this.CMBQueryColumn.TabIndex = 15;
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(108, 7);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(67, 20);
-            this.label5.TabIndex = 16;
-            this.label5.Text = "Column:";
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
@@ -261,6 +262,7 @@
             this.Controls.Add(this.DGVTableview);
             this.Controls.Add(this.CMBTableSelect);
             this.Controls.Add(this.BTNSelectDataSource);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
             this.Text = "Admin Views - Facebook Data";
             this.Load += new System.EventHandler(this.Form1_Load);

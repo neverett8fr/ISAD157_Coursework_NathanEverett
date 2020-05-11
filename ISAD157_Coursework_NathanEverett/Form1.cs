@@ -51,6 +51,7 @@ namespace ISAD157_Coursework_NathanEverett
                 dataAdapter.Fill(output, "table_names");
 
 
+                CMBTableSelect.Items.Clear();
                 for (int i = 0; i <= output.Tables["table_names"].Rows.Count - 1; i++) //repeat for amount of tables
                 {
                     query = "SELECT * FROM " + output.Tables["table_names"].Rows[i][0] + ";"; //this creates a query which will return all the tables in the database
@@ -147,7 +148,7 @@ namespace ISAD157_Coursework_NathanEverett
             Button BTNSubmit = new Button();
             Button BTNCancel = new Button();
 
-            RDBSetupConnection.Text = "Setup MySQL Connection";
+            RDBSetupConnection.Text = "Setup MySQL Connection"; //two options for connecting
             RDBUsePreset.Text = "Use Preset MySQL Connection";
 
             BTNSubmit.Text = "Submit";
@@ -270,6 +271,7 @@ namespace ISAD157_Coursework_NathanEverett
         {
 
             dataSetLocal = connectMySQL(setupConnection());
+            CMBTableSelectQuery.Items.Clear(); //copy over combobox values from one to the other
             for (int i = 0; i <= CMBTableSelect.Items.Count - 1; i++) {
                 CMBTableSelectQuery.Items.Add(CMBTableSelect.Items[i]);
             }
@@ -320,7 +322,7 @@ namespace ISAD157_Coursework_NathanEverett
             CMBQueryColumn.Items.Clear();
             for (int i = 0; i <= dataSetLocal.Tables[CMBTableSelectQuery.Text].Columns.Count - 1; i++)
             {
-                CMBQueryColumn.Items.Add(dataSetLocal.Tables[CMBTableSelectQuery.Text].Columns[i].ColumnName); //adds column names to combobox from table selected in other combobox
+               CMBQueryColumn.Items.Add(dataSetLocal.Tables[CMBTableSelectQuery.Text].Columns[i].ColumnName); //adds column names to combobox from table selected in other combobox
             }
         }
 
@@ -397,6 +399,9 @@ namespace ISAD157_Coursework_NathanEverett
 
                 connection.Close();
 
+
+
+                //constructs the profile text box
                 string schoolWorkplaceString = "";
                 schoolWorkplaceString += "Workplaces: " + Environment.NewLine;
                 for (int i = 0; i <= workplaces.Tables["table_workplaces"].Rows.Count - 1; i++)
@@ -414,10 +419,10 @@ namespace ISAD157_Coursework_NathanEverett
                     Environment.NewLine + "Hometown: " + hometown + Environment.NewLine + "Gender: " + gender +
                     Environment.NewLine + "Relationship Status: " + relationshipStatus + Environment.NewLine + "Current Town: " + currentTown +
                     Environment.NewLine + Environment.NewLine + schoolWorkplaceString; 
+                //---------------------------------
 
 
-
-
+                //changes the profile text box to make bold certain words
                 Regex regExp = new Regex("Workplaces|Schools|User Info"); //very basic Regex statement checking if any of text matches words in regex
                 foreach (Match match in regExp.Matches(RTBProfile.Text))
                 {
@@ -425,8 +430,12 @@ namespace ISAD157_Coursework_NathanEverett
                     RTBProfile.SelectionFont = new Font("New Times Roman", 15); // if regex matches -- formats the text
 
                 }
+                //-----------------------------
             }
-            catch { }
+            catch
+            {
+                //error message
+            }
 
 
         }
