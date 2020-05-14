@@ -28,16 +28,21 @@ Fill out search results and click "Go" to load queried results into a table on t
 
 
 Screenshots:
+
+Startup View
 ![image](https://user-images.githubusercontent.com/43852724/81899626-363eee80-95b3-11ea-92e7-e09d5a5e8639.png)
 
+Loading from csv / dialog box and result
 ![image](https://user-images.githubusercontent.com/43852724/81899733-6090ac00-95b3-11ea-9149-4a580f288566.png)
 ![image](https://user-images.githubusercontent.com/43852724/81899759-6e463180-95b3-11ea-86fe-375de35e0a6d.png)
 
+Loading from server and viewing data
 ![image](https://user-images.githubusercontent.com/43852724/81899783-7ef6a780-95b3-11ea-90f3-17196e7e4bab.png)
 ![image](https://user-images.githubusercontent.com/43852724/81899809-946bd180-95b3-11ea-83fc-1b6e0aaf7073.png)
 ![image](https://user-images.githubusercontent.com/43852724/81899849-a64d7480-95b3-11ea-8b72-ba96c006d6de.png)
 ![image](https://user-images.githubusercontent.com/43852724/81899941-cd0bab00-95b3-11ea-9725-e8806bce1ef5.png)
 
+Filtering Data Using Query
 ![image](https://user-images.githubusercontent.com/43852724/81900021-f593a500-95b3-11ea-951f-613b3bd72ce9.png)
 ![image](https://user-images.githubusercontent.com/43852724/81900107-2247bc80-95b4-11ea-86df-987f3bc58309.png)
 ![image](https://user-images.githubusercontent.com/43852724/81900184-3f7c8b00-95b4-11ea-901c-07654d2000be.png)
