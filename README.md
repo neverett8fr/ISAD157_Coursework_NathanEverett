@@ -13,7 +13,7 @@ Application Description:
 Once the application has started up, the functions can be found fairly simply by clicking on buttons and tabs which are labelled.
 The application has a few main functions: Loading data from CSV file, loading data from a MySQL database, and filtering this data.
 When the application is started the user will see a blank page with the title: "User Profile"; the empty space will be populated once data has been loaded.
-Once loaded, the data will displayed on the right hand side of the page - with the ability to change tabled viewed using the combobox / dropdown menu
+Once loaded, the data will displayed on the right hand side of the page - with the ability to change tabled viewed using the combobox / dropdown menu which should be populated automatically.
 Clicking on different tabs within the application lead to different pages with different functions: page 1 - a user profile, page 2 - a place to submit queries to filter the data on the left hand side of the page.
 
 
