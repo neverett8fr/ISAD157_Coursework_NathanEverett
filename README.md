@@ -39,6 +39,8 @@ Loading from csv / dialog box and result
 Loading from server and viewing data
 ![image](https://user-images.githubusercontent.com/43852724/81899783-7ef6a780-95b3-11ea-90f3-17196e7e4bab.png)
 ![image](https://user-images.githubusercontent.com/43852724/81899809-946bd180-95b3-11ea-83fc-1b6e0aaf7073.png)
+
+Clicking on cell / select user
 ![image](https://user-images.githubusercontent.com/43852724/81899849-a64d7480-95b3-11ea-8b72-ba96c006d6de.png)
 ![image](https://user-images.githubusercontent.com/43852724/81899941-cd0bab00-95b3-11ea-9725-e8806bce1ef5.png)
 
